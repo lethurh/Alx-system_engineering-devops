@@ -1,14 +1,26 @@
 #!/usr/bin/python3
-""""advanced api oth tasks"""
+"""This script will return the number of subscribers associated with
+a subreddit
+"""
 import requests
+from sys import argv
 
 
 def number_of_subscribers(subreddit):
-    headers = {'User-Agent': 'Linux/client/0.0'}
-    url = 'https://www.reddit.com/r/{}/about.json'.format(subreddit)
-    response = requests.get(url, headers=headers)
-    if response.status_code == 404:
+    """Method get the number of users subscribed to a subreddit
+
+    subreddit (Str)- subreddit to check
+
+    Returns - number of users (INT) else 0 (INT) if not subreddit is found
+    """
+    try:
+        h = {'user-agent': 'Mozilla/5.0', 'allow_redirects': 'false'}
+        url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
+        req = requests.get(url, headers=h)
+        return req.json().get('data').get('subscribers', 0)
+    except Exception as e:
         return 0
-    else:
-        subsciber = response.json()['data']['subscribers']
-        return subsciber
+
+
+if __name__ == "__main__":
+    pass
