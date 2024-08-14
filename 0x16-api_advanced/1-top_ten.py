@@ -1,24 +1,18 @@
 #!/usr/bin/python3
-""""advanced api oth tasks"""
-import requests
+"""Module for task 1"""
 
 
 def top_ten(subreddit):
-    """"Alx verification of editing tools"""
-    headers = {'User-Agent': 'Linux/client/0.0'}
-    url = 'https://www.reddit.com/r/{}/hot/.json'.format(subreddit)
-    response = requests.get(url, headers=headers)
-    if response.status_code == 404:
-        print("None")
-        return
+    """Queries the Reddit API and returns the top 10 hot posts
+    of the subreddit"""
+    import requests
+
+    sub_info = requests.get("https://www.reddit.com/r/{}/hot.json?limit=10"
+                            .format(subreddit),
+                            headers={"User-Agent": "My-User-Agent"},
+                            allow_redirects=False)
+    if sub_info.status_code >= 300:
+        print('None')
     else:
-        result = response.json()['data']['children']
-        if result is None:
-            print("None")
-            return
-        values = []
-        for title in result:
-            if len(values) > 10:
-                break
-            values.append(title['data'].get('title'))
-        print(*values, sep='\n')
+        [print(child.get("data").get("title"))
+         for child in sub_info.json().get("data").get("children")]
